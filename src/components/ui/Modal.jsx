@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -21,7 +22,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -35,11 +36,11 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
           sizes[size]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+        <div className={`flex items-center px-6 shrink-0 ${title ? 'justify-between py-4 border-b border-gray-200 dark:border-gray-700' : 'justify-end py-2'}`}>
+          {title && <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h2>}
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="rounded-md p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <X size={18} />
           </button>
@@ -51,6 +52,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

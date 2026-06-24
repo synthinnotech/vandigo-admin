@@ -7,7 +7,7 @@ export function Table({ columns, data, loading, onRowClick, emptyMessage = 'No r
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+    <div className="overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>

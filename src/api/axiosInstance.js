@@ -1,16 +1,19 @@
 import axios from 'axios';
 
-const DEFAULT_BASE_URL = 'https://splotchy-whole-sublime.ngrok-free.dev';
+const PROD_BASE_URL = 'https://splotchy-whole-sublime.ngrok-free.dev';
 
 const axiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use((config) => {
-  const baseURL = localStorage.getItem('vandigo_api_url') || DEFAULT_BASE_URL;
+  const storedUrl = localStorage.getItem('vandigo_api_url');
+  const isDev = process.env.NODE_ENV === 'development';
+  config.baseURL = isDev ? '' : (storedUrl || PROD_BASE_URL);
   const token = localStorage.getItem('vandigo_access_token');
-  config.baseURL = baseURL;
-  config.headers['ngrok-skip-browser-warning'] = 'true';
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  if (!isDev) {
+    config.headers['ngrok-skip-browser-warning'] = 'true';
   }
   return config;
 });

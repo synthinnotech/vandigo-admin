@@ -13,12 +13,17 @@ export default function ConfirmDialog({
   loading = false,
 }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
-      <div className="flex flex-col items-center gap-4 py-2 text-center">
-        <div className="rounded-full bg-red-100 dark:bg-red-900/30 p-3">
-          <AlertTriangle size={24} className="text-red-600 dark:text-red-400" />
+    <Modal isOpen={isOpen} onClose={onClose} size="sm">
+      <div className="flex flex-col items-center gap-4 pt-2 pb-4 text-center">
+        <div className="rounded-full bg-red-100 dark:bg-red-900/30 p-4">
+          <AlertTriangle size={28} className="text-red-600 dark:text-red-400" />
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300">{message}</p>
+        <div>
+          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+          {message && (
+            <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">{message}</p>
+          )}
+        </div>
         <div className="flex gap-3 w-full">
           <Button variant="secondary" className="flex-1" onClick={onClose} disabled={loading}>
             Cancel
