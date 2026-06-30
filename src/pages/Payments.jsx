@@ -25,7 +25,7 @@ export default function Payments() {
     { key: 'ride_id', label: 'Ride', render: (v) => <span className="font-mono text-xs text-gray-500">{v ? `#${v}` : '—'}</span> },
     { key: 'amount', label: 'Amount', render: (v) => <span className="font-semibold text-gray-900 dark:text-gray-100">{formatCurrency(v)}</span> },
     {
-      key: 'payment_method', label: 'Method',
+      key: 'method', label: 'Method',
       render: (v) => <Badge variant="info">{v ?? '—'}</Badge>,
     },
     {

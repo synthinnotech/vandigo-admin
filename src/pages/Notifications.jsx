@@ -93,7 +93,10 @@ export default function Notifications() {
                 <Bell size={16} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-900 dark:text-gray-100 leading-snug">{n.message ?? n.title}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-snug">{n.title}</p>
+                {n.body && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{n.body}</p>
+                )}
                 <p className="text-xs text-gray-400 mt-1">{formatDate(n.created_at)}</p>
               </div>
               {!n.is_read && (

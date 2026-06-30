@@ -26,8 +26,8 @@ function OfferCard({ offer }) {
             {offer.is_active ? 'Active' : 'Inactive'}
           </Badge>
         </div>
-        {offer.description && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">{offer.description}</p>
+        {offer.subtitle && (
+          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">{offer.subtitle}</p>
         )}
         {offer.sort_order != null && (
           <p className="text-xs text-gray-400 dark:text-gray-500">Sort order: {offer.sort_order}</p>

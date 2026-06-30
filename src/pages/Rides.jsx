@@ -9,7 +9,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { formatDate, formatCurrency, getStatusColor } from '../lib/utils';
 import clsx from 'clsx';
 
-const STATUS_FILTERS = ['all', 'active', 'completed', 'cancelled'];
+const STATUS_FILTERS = ['all', 'in_progress', 'completed', 'cancelled'];
 
 function RideDetailModal({ rideId, onClose }) {
   const { data: ride, isLoading } = useQuery({
@@ -105,7 +105,7 @@ export default function Rides() {
     },
     {
       key: 'started_at', label: 'Date',
-      render: (v, row) => <span className="text-xs text-gray-500 whitespace-nowrap">{formatDate(v ?? row.created_at)}</span>,
+      render: (v, row) => <span className="text-xs text-gray-500 whitespace-nowrap">{formatDate(v ?? row.requested_at)}</span>,
     },
   ];
 

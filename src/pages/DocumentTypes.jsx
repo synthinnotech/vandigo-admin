@@ -46,6 +46,10 @@ export default function DocumentTypes() {
     { key: 'title', label: 'Title', render: (v) => <span className="font-medium text-gray-900 dark:text-gray-100">{v}</span> },
     { key: 'description', label: 'Description', render: (v) => <span className="text-gray-500 dark:text-gray-400">{v ?? '—'}</span> },
     {
+      key: 'is_mandatory', label: 'Mandatory',
+      render: (v) => <Badge variant={v ? 'warning' : 'default'}>{v ? 'Required' : 'Optional'}</Badge>,
+    },
+    {
       key: 'is_active', label: 'Status',
       render: (v) => <Badge variant={v !== false ? 'success' : 'default'}>{v !== false ? 'Active' : 'Inactive'}</Badge>,
     },

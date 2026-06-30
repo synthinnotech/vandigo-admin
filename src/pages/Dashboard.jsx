@@ -198,7 +198,7 @@ export default function Dashboard() {
                       <td className="px-6 py-3 text-gray-700 dark:text-gray-300 max-w-[140px] truncate">{ride.pickup_address ?? '—'}</td>
                       <td className="px-6 py-3 text-gray-700 dark:text-gray-300 max-w-[140px] truncate">{ride.dropoff_address ?? '—'}</td>
                       <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{formatCurrency(ride.final_fare ?? ride.estimated_fare)}</td>
-                      <td className="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(ride.started_at ?? ride.created_at)}</td>
+                      <td className="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(ride.started_at ?? ride.requested_at)}</td>
                     </tr>
                   ))}
             </tbody>

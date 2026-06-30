@@ -112,7 +112,7 @@ function DriverTable({ data, loading, onApprove, onDocs, approvingId }) {
       render: (v) => <Badge variant={v ? 'success' : 'warning'}>{v ? 'Approved' : 'Pending'}</Badge>,
     },
     {
-      key: 'average_rating', label: 'Rating',
+      key: 'rating', label: 'Rating',
       render: (v) => v ? (
         <span className="flex items-center gap-1 text-sm">
           <Star size={13} className="text-yellow-400 fill-yellow-400" />
