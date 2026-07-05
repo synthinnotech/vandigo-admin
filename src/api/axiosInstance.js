@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PROD_BASE_URL = 'https://splotchy-whole-sublime.ngrok-free.dev';
+const PROD_BASE_URL = 'http://168.144.90.65';
 
 const axiosInstance = axios.create();
 
@@ -24,7 +24,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('vandigo_access_token');
       localStorage.removeItem('vandigo_refresh_token');
-      window.location.href = '/login';
+      window.location.href = '/admin/login';
     }
     return Promise.reject(error);
   }

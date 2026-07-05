@@ -26,7 +26,7 @@ function PrivateRoute({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
