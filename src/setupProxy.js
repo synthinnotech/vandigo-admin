@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const API_TARGET = process.env.REACT_APP_API_URL || 'https://splotchy-whole-sublime.ngrok-free.dev';
+const API_TARGET = process.env.REACT_APP_API_URL || 'http://168.144.90.65:8000';
 
 function makeProxy() {
   return createProxyMiddleware({
