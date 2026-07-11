@@ -6,6 +6,7 @@ const variants = {
   danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500 disabled:bg-red-400',
   ghost: 'text-gray-600 hover:bg-gray-100 focus-visible:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-700',
   success: 'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-500',
+  amber: 'bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 hover:from-amber-500 hover:to-amber-600 focus-visible:ring-amber-500 disabled:from-amber-300 disabled:to-amber-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200',
 };
 
 const sizes = {

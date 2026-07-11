@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PROD_BASE_URL = 'http://168.144.90.65';
+const PROD_BASE_URL = 'http://168.144.90.65:8000';
 
 const axiosInstance = axios.create();
 

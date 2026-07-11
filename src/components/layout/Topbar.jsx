@@ -18,6 +18,7 @@ const BREADCRUMB_MAP = {
   '/withdrawals': 'Withdrawals',
   '/promo-codes': 'Promo Codes',
   '/fare-config': 'Fare Config',
+  '/plans': 'Plans',
   '/support': 'Support Tickets',
   '/offers': 'Offers',
   '/document-types': 'Document Types',
