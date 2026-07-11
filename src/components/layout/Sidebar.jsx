@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Navigation, CreditCard, Wallet,
-  Tag, DollarSign, Headphones, Gift, FileText, Settings, X, Zap
+  Tag, DollarSign, Layers, Headphones, Gift, FileText, Settings, X, Zap
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -14,6 +14,7 @@ const navItems = [
   { to: '/withdrawals', icon: Wallet, label: 'Withdrawals' },
   { to: '/promo-codes', icon: Tag, label: 'Promo Codes' },
   { to: '/fare-config', icon: DollarSign, label: 'Fare Config' },
+  { to: '/plans', icon: Layers, label: 'Plans' },
   { to: '/support', icon: Headphones, label: 'Support' },
   { to: '/offers', icon: Gift, label: 'Offers' },
   { to: '/document-types', icon: FileText, label: 'Document Types' },
