@@ -44,6 +44,7 @@ export default function App() {
                 <Route path="/withdrawals" element={<PrivateRoute><Withdrawals /></PrivateRoute>} />
                 <Route path="/promo-codes" element={<PrivateRoute><PromoCodes /></PrivateRoute>} />
                 <Route path="/fare-config" element={<PrivateRoute><FareConfig /></PrivateRoute>} />
+                <Route path="/plans" element={<PrivateRoute><Plans /></PrivateRoute>} />
                 <Route path="/support" element={<PrivateRoute><Support /></PrivateRoute>} />
                 <Route path="/offers" element={<PrivateRoute><Offers /></PrivateRoute>} />
                 <Route path="/document-types" element={<PrivateRoute><DocumentTypes /></PrivateRoute>} />
