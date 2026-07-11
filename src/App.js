@@ -54,25 +54,6 @@ export default function App() {
               </Routes>
               <ChatWidget />
             </ChatProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-              <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
-              <Route path="/drivers" element={<PrivateRoute><Drivers /></PrivateRoute>} />
-              <Route path="/rides" element={<PrivateRoute><Rides /></PrivateRoute>} />
-              <Route path="/payments" element={<PrivateRoute><Payments /></PrivateRoute>} />
-              <Route path="/withdrawals" element={<PrivateRoute><Withdrawals /></PrivateRoute>} />
-              <Route path="/promo-codes" element={<PrivateRoute><PromoCodes /></PrivateRoute>} />
-              <Route path="/fare-config" element={<PrivateRoute><FareConfig /></PrivateRoute>} />
-              <Route path="/plans" element={<PrivateRoute><Plans /></PrivateRoute>} />
-              <Route path="/support" element={<PrivateRoute><Support /></PrivateRoute>} />
-              <Route path="/offers" element={<PrivateRoute><Offers /></PrivateRoute>} />
-              <Route path="/document-types" element={<PrivateRoute><DocumentTypes /></PrivateRoute>} />
-              <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
-              <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>
