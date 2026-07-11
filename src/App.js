@@ -33,7 +33,6 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
-<<<<<<< HEAD
             <ChatProvider>
               <Routes>
                 <Route path="/login" element={<Login />} />
@@ -55,7 +54,6 @@ export default function App() {
               </Routes>
               <ChatWidget />
             </ChatProvider>
-=======
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
@@ -75,7 +73,6 @@ export default function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
->>>>>>> f60eda0e08969982d249f11dc80b69f08b546a49
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>
