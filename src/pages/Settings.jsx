@@ -1,21 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Sun, Moon, Save, Activity, User, Palette, Info, Lock, Camera, Eye, EyeOff, Phone } from 'lucide-react';
+import { Sun, Moon, Save, Activity, User, Palette, Info, Lock, Camera, Eye, EyeOff, Phone, Bot, Volume2, FileText } from 'lucide-react';
 import { getCurrentUser, updateCurrentUser, uploadProfilePicture, changePassword } from '../api/users';
 import { getHealth } from '../api/admin';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
+import { useChat } from '../context/ChatContext';
+import { AVAILABLE_MODELS } from '../config/aiModels';
+import { aiPolicy } from '../content/aiPolicy';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
+import Modal from '../components/ui/Modal';
 import clsx from 'clsx';
 
 function SectionHeader({ icon: Icon, title, description }) {
   return (
     <div className="flex items-center gap-3 mb-5">
-      <div className="rounded-xl bg-indigo-50 dark:bg-indigo-900/30 p-2.5">
-        <Icon size={18} className="text-indigo-600 dark:text-indigo-400" />
+      <div className="rounded-xl bg-amber-50 dark:bg-amber-900/30 p-2.5">
+        <Icon size={18} className="text-amber-600 dark:text-amber-400" />
       </div>
       <div>
         <h3 className="font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
@@ -84,49 +88,56 @@ function ProfileSection() {
     <Card>
       <SectionHeader icon={User} title="Profile" description="Update your admin profile information" />
 
-      <div className="flex items-center gap-4 mb-6 pb-5 border-b border-gray-100 dark:border-gray-700">
-        <div className="relative flex-shrink-0">
-          <div
-            className="w-16 h-16 rounded-2xl overflow-hidden cursor-pointer group"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {avatarSrc ? (
-              <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                {initials}
+      <div className="flex items-center justify-between gap-4 mb-6 pb-5 border-b border-gray-100 dark:border-gray-700">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="relative flex-shrink-0">
+            <div
+              className="w-16 h-16 rounded-2xl overflow-hidden cursor-pointer group"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {avatarSrc ? (
+                <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-amber-500 flex items-center justify-center text-gray-900 font-bold text-lg">
+                  {initials}
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                <Camera size={18} className="text-white" />
+              </div>
+            </div>
+            {picUpload.isPending && (
+              <div className="absolute inset-0 rounded-2xl bg-black/50 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               </div>
             )}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-              <Camera size={18} className="text-white" />
-            </div>
           </div>
-          {picUpload.isPending && (
-            <div className="absolute inset-0 rounded-2xl bg-black/50 flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          <div className="min-w-0">
+            <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">{form.full_name || 'Admin'}</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 truncate">{form.email}</p>
+          </div>
         </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-
-        <div>
-          <p className="font-semibold text-gray-900 dark:text-gray-100">{form.full_name || 'Admin'}</p>
-          <p className="text-sm text-gray-400 dark:text-gray-500">{form.email}</p>
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="mt-1 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
-          >
-            Change photo
-          </button>
-        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          icon={Camera}
+          className="shrink-0"
+          loading={picUpload.isPending}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          Change photo
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -258,7 +269,7 @@ function AppearanceSection() {
             className={clsx(
               'flex flex-col items-center gap-2.5 py-5 rounded-xl border-2 transition-all text-sm font-medium',
               theme === value
-                ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
                 : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
             )}
           >
@@ -267,6 +278,87 @@ function AppearanceSection() {
           </button>
         ))}
       </div>
+    </Card>
+  );
+}
+
+function AIAssistantSection() {
+  const { modelId, setModelId, voiceEnabled, setVoiceEnabled } = useChat();
+  const [policyOpen, setPolicyOpen] = useState(false);
+
+  return (
+    <Card>
+      <SectionHeader icon={Bot} title="AI Assistant" description="Model and voice preferences for the chat assistant" />
+      <div className="space-y-3">
+        {AVAILABLE_MODELS.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => setModelId(m.id)}
+            className={clsx(
+              'flex w-full items-start justify-between gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all',
+              modelId === m.id
+                ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30'
+                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+            )}
+          >
+            <div>
+              <div className="flex items-center gap-2">
+                <span className={clsx('text-sm font-semibold', modelId === m.id ? 'text-amber-600 dark:text-amber-400' : 'text-gray-900 dark:text-gray-100')}>
+                  {m.name}
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{m.description}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-700">
+        <div className="flex items-center gap-2">
+          <Volume2 size={16} className="text-gray-400" />
+          <div>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Voice replies</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Read assistant responses aloud</p>
+          </div>
+        </div>
+        <button
+          role="switch"
+          aria-checked={voiceEnabled}
+          onClick={() => setVoiceEnabled(!voiceEnabled)}
+          className={clsx(
+            'relative h-6 w-11 shrink-0 rounded-full transition-colors',
+            voiceEnabled ? 'bg-amber-500' : 'bg-gray-200 dark:bg-gray-700'
+          )}
+        >
+          <span
+            className={clsx(
+              'absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform',
+              voiceEnabled ? 'translate-x-5' : 'translate-x-0'
+            )}
+          />
+        </button>
+      </div>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={FileText}
+        className="mt-4 w-full justify-center"
+        onClick={() => setPolicyOpen(true)}
+      >
+        View AI Usage Policy
+      </Button>
+
+      <Modal isOpen={policyOpen} onClose={() => setPolicyOpen(false)} title={aiPolicy.title} size="md">
+        <div className="space-y-4">
+          {aiPolicy.sections.map((s) => (
+            <div key={s.heading}>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{s.heading}</h4>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </Card>
   );
 }
@@ -327,6 +419,7 @@ export default function Settings() {
         </div>
         <div className="space-y-6">
           <AppearanceSection />
+          <AIAssistantSection />
           <AboutSection />
         </div>
       </div>

@@ -7,6 +7,7 @@ import { Table } from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Drawer from '../components/ui/Drawer';
+import Pagination from '../components/ui/Pagination';
 import { formatDate, getStatusColor } from '../lib/utils';
 import clsx from 'clsx';
 
@@ -59,7 +60,7 @@ function DocumentReview({ driverId, onClose }) {
               href={doc.file_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+              className="block text-xs text-amber-600 dark:text-amber-400 hover:underline"
             >
               View file ↗
             </a>
@@ -68,7 +69,7 @@ function DocumentReview({ driverId, onClose }) {
             <div className="flex flex-col gap-2">
               <textarea
                 placeholder="Rejection reason (optional)"
-                className="w-full text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                className="w-full text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                 rows={2}
                 value={reviewingDocId === doc.id ? rejectionReason : ''}
                 onChange={(e) => { setReviewingDocId(doc.id); setRejectionReason(e.target.value); }}
@@ -151,16 +152,19 @@ function DriverTable({ data, loading, onApprove, onDocs, approvingId }) {
   return <Table columns={columns} data={data} loading={loading} emptyMessage="No drivers found" />;
 }
 
+const PAGE_SIZE = 20;
+
 export default function Drivers() {
   const { addToast } = useToast();
   const qc = useQueryClient();
   const [tab, setTab] = useState('all');
+  const [page, setPage] = useState(1);
   const [docsDriverId, setDocsDriverId] = useState(null);
   const [approvingId, setApprovingId] = useState(null);
 
   const { data: allData, isLoading: allLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => getAllDrivers().then((r) => r.data),
+    queryKey: ['drivers', page],
+    queryFn: () => getAllDrivers({ page, limit: PAGE_SIZE }).then((r) => r.data),
   });
 
   const { data: pendingData, isLoading: pendingLoading } = useQuery({
@@ -186,9 +190,10 @@ export default function Drivers() {
 
   const allDrivers = Array.isArray(allData) ? allData : (allData?.items ?? allData?.drivers ?? []);
   const pendingDrivers = Array.isArray(pendingData) ? pendingData : (pendingData?.items ?? pendingData?.drivers ?? []);
+  const allTotal = Array.isArray(allData) ? allDrivers.length : (allData?.total ?? allDrivers.length);
 
   const tabs = [
-    { key: 'all', label: 'All Drivers', count: allDrivers.length },
+    { key: 'all', label: 'All Drivers', count: allTotal },
     { key: 'pending', label: 'Pending Approval', count: pendingDrivers.length },
   ];
 
@@ -213,7 +218,7 @@ export default function Drivers() {
           >
             {t.label}
             {t.count > 0 && (
-              <span className="ml-1.5 text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full px-1.5 py-0.5">
+              <span className="ml-1.5 text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full px-1.5 py-0.5">
                 {t.count}
               </span>
             )}
@@ -222,13 +227,16 @@ export default function Drivers() {
       </div>
 
       {tab === 'all' ? (
-        <DriverTable
-          data={allDrivers}
-          loading={allLoading}
-          onApprove={handleApprove}
-          onDocs={setDocsDriverId}
-          approvingId={approvingId}
-        />
+        <>
+          <DriverTable
+            data={allDrivers}
+            loading={allLoading}
+            onApprove={handleApprove}
+            onDocs={setDocsDriverId}
+            approvingId={approvingId}
+          />
+          <Pagination page={page} limit={PAGE_SIZE} total={allTotal} onPageChange={setPage} />
+        </>
       ) : (
         <DriverTable
           data={pendingDrivers}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2, Plus, DollarSign } from 'lucide-react';
 import { getFareConfigs, createFareConfig, updateFareConfig } from '../api/fareConfig';
@@ -55,7 +56,7 @@ function FareForm({ initial = EMPTY_FORM, mode, onSubmit, loading, onClose }) {
         <Input label="Min Fare (₹)" type="number" step="0.01" value={form.min_fare} onChange={(e) => set('min_fare', e.target.value)} error={errors.min_fare} placeholder="50" />
       </div>
       <div className="flex items-center gap-3">
-        <input type="checkbox" id="fc_active" checked={form.is_active} onChange={(e) => set('is_active', e.target.checked)} className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+        <input type="checkbox" id="fc_active" checked={form.is_active} onChange={(e) => set('is_active', e.target.checked)} className="rounded border-gray-300 text-amber-600 focus:ring-amber-500" />
         <label htmlFor="fc_active" className="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
       </div>
       <div className="flex justify-end gap-3 pt-2">
@@ -78,8 +79,8 @@ function FareCard({ config, onEdit }) {
     <Card>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
-          <div className="rounded-xl bg-indigo-100 dark:bg-indigo-900/30 p-2.5">
-            <DollarSign size={18} className="text-indigo-600 dark:text-indigo-400" />
+          <div className="rounded-xl bg-amber-100 dark:bg-amber-900/30 p-2.5">
+            <DollarSign size={18} className="text-amber-600 dark:text-amber-400" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 capitalize">{config.vehicle_type}</h3>
@@ -105,7 +106,8 @@ function FareCard({ config, onEdit }) {
 export default function FareConfig() {
   const { addToast } = useToast();
   const qc = useQueryClient();
-  const [modal, setModal] = useState(null);
+  const [searchParams] = useSearchParams();
+  const [modal, setModal] = useState(() => (searchParams.get('action') === 'create' ? { mode: 'create' } : null));
 
   const { data, isLoading } = useQuery({
     queryKey: ['fare-config'],

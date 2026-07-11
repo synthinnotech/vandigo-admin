@@ -41,8 +41,8 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <div className="flex items-center justify-between px-5 py-5 border-b border-gray-200 dark:border-gray-700 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="rounded-xl bg-indigo-600 p-2">
-              <Zap size={18} className="text-white" />
+            <div className="rounded-xl bg-amber-500 p-2">
+              <Zap size={18} className="text-gray-900" />
             </div>
             <div>
               <span className="text-base font-bold text-gray-900 dark:text-gray-100">Vandigo</span>

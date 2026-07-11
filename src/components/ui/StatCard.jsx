@@ -3,7 +3,7 @@ import Card from './Card';
 
 export default function StatCard({ label, value, icon: Icon, color = 'indigo', trend, subtext }) {
   const colorMap = {
-    indigo: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400',
+    indigo: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
     green: 'bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400',
     blue: 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
     orange: 'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',

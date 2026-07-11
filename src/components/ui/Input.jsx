@@ -2,11 +2,10 @@ import clsx from 'clsx';
 import { forwardRef } from 'react';
 
 const accentRing = {
-  indigo: 'focus:ring-indigo-500 focus:border-indigo-500',
   amber: 'focus:ring-amber-500 focus:border-amber-500',
 };
 
-const Input = forwardRef(({ label, error, icon: Icon, rightElement, className, accent = 'indigo', ...props }, ref) => {
+const Input = forwardRef(({ label, error, icon: Icon, rightElement, className, accent = 'amber', ...props }, ref) => {
   return (
     <div className="w-full">
       {label && (

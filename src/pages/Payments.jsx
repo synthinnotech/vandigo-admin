@@ -1,16 +1,23 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getPayments } from '../api/payments';
 import { Table } from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
+import Pagination from '../components/ui/Pagination';
 import { formatDate, formatCurrency } from '../lib/utils';
 
+const PAGE_SIZE = 20;
+
 export default function Payments() {
+  const [page, setPage] = useState(1);
+
   const { data, isLoading } = useQuery({
-    queryKey: ['payments'],
-    queryFn: () => getPayments().then((r) => r.data),
+    queryKey: ['payments', page],
+    queryFn: () => getPayments({ page, limit: PAGE_SIZE }).then((r) => r.data),
   });
 
   const payments = Array.isArray(data) ? data : (data?.items ?? data?.payments ?? []);
+  const total = Array.isArray(data) ? payments.length : (data?.total ?? payments.length);
 
   const statusColor = (s) => {
     if (s === 'completed') return 'success';
@@ -42,7 +49,7 @@ export default function Payments() {
     <div className="space-y-5">
       <div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Payments</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{payments.length} records</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{total} records</p>
       </div>
       <Table
         columns={columns}
@@ -50,6 +57,7 @@ export default function Payments() {
         loading={isLoading}
         emptyMessage="No payment records found"
       />
+      <Pagination page={page} limit={PAGE_SIZE} total={total} onPageChange={setPage} />
     </div>
   );
 }

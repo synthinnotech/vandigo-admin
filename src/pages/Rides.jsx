@@ -5,6 +5,7 @@ import { getRides, getRide } from '../api/rides';
 import { Table } from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
+import Pagination from '../components/ui/Pagination';
 import { Skeleton } from '../components/ui/Skeleton';
 import { formatDate, formatCurrency, getStatusColor } from '../lib/utils';
 import clsx from 'clsx';
@@ -64,16 +65,30 @@ function RideDetailModal({ rideId, onClose }) {
   );
 }
 
+const PAGE_SIZE = 20;
+
 export default function Rides() {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [page, setPage] = useState(1);
   const [selectedRideId, setSelectedRideId] = useState(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['rides', statusFilter],
-    queryFn: () => getRides(statusFilter !== 'all' ? { status: statusFilter } : {}).then((r) => r.data),
+    queryKey: ['rides', statusFilter, page],
+    queryFn: () =>
+      getRides({
+        page,
+        limit: PAGE_SIZE,
+        ...(statusFilter !== 'all' ? { status: statusFilter } : {}),
+      }).then((r) => r.data),
   });
 
   const rides = Array.isArray(data) ? data : (data?.items ?? data?.rides ?? []);
+  const total = Array.isArray(data) ? rides.length : (data?.total ?? rides.length);
+
+  function handleStatusFilterChange(value) {
+    setStatusFilter(value);
+    setPage(1);
+  }
 
   const columns = [
     { key: 'id', label: 'Ride ID', render: (v) => <span className="font-mono text-xs font-semibold text-gray-700 dark:text-gray-300">#{v}</span> },
@@ -113,14 +128,14 @@ export default function Rides() {
     <div className="space-y-5">
       <div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Rides</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{rides.length} rides</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{total} rides</p>
       </div>
 
       <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl w-fit flex-wrap">
         {STATUS_FILTERS.map((s) => (
           <button
             key={s}
-            onClick={() => setStatusFilter(s)}
+            onClick={() => handleStatusFilterChange(s)}
             className={clsx(
               'px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors',
               statusFilter === s
@@ -140,6 +155,8 @@ export default function Rides() {
         onRowClick={(row) => setSelectedRideId(row.id)}
         emptyMessage="No rides found"
       />
+
+      <Pagination page={page} limit={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <RideDetailModal rideId={selectedRideId} onClose={() => setSelectedRideId(null)} />
     </div>

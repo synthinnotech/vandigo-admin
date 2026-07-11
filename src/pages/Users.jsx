@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, UserCheck, UserX, Shield } from 'lucide-react';
 import { getUsers, activateUser, deactivateUser } from '../api/users';
@@ -7,8 +8,10 @@ import { Table } from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Pagination from '../components/ui/Pagination';
 import Drawer from '../components/ui/Drawer';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
+import SummarizeButton from '../components/chat/SummarizeButton';
 import { formatDate } from '../lib/utils';
 
 function UserDetail({ user }) {
@@ -25,14 +28,19 @@ function UserDetail({ user }) {
   ];
   return (
     <div className="px-6 py-4 space-y-4">
-      <div className="flex items-center gap-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="h-14 w-14 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl font-bold">
-          {(user.full_name ?? user.name ?? 'U')[0].toUpperCase()}
+      <div className="flex items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-4">
+          <div className="h-14 w-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 text-xl font-bold">
+            {(user.full_name ?? user.name ?? 'U')[0].toUpperCase()}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">{user.full_name ?? user.name ?? '—'}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email ?? user.phone}</p>
+          </div>
         </div>
-        <div>
-          <p className="font-semibold text-gray-900 dark:text-gray-100">{user.full_name ?? user.name ?? '—'}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{user.email ?? user.phone}</p>
-        </div>
+        <SummarizeButton
+          recordText={fields.map(([label, val]) => `${label}: ${val ?? '—'}`).join('\n')}
+        />
       </div>
       <dl className="space-y-3">
         {fields.map(([label, val]) => (
@@ -46,19 +54,24 @@ function UserDetail({ user }) {
   );
 }
 
+const PAGE_SIZE = 20;
+
 export default function Users() {
   const { addToast } = useToast();
   const qc = useQueryClient();
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('q') || '');
+  const [page, setPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [confirm, setConfirm] = useState(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => getUsers().then((r) => r.data),
+    queryKey: ['users', page],
+    queryFn: () => getUsers({ page, limit: PAGE_SIZE }).then((r) => r.data),
   });
 
   const users = Array.isArray(data) ? data : (data?.items ?? data?.users ?? []);
+  const total = Array.isArray(data) ? users.length : (data?.total ?? users.length);
 
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
@@ -69,6 +82,11 @@ export default function Users() {
       (u.email ?? '').toLowerCase().includes(q)
     );
   });
+
+  function handleSearchChange(value) {
+    setSearch(value);
+    setPage(1);
+  }
 
   const activate = useMutation({
     mutationFn: (id) => activateUser(id),
@@ -152,14 +170,14 @@ export default function Users() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Users</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{filtered.length} total</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{total} total</p>
         </div>
         <div className="w-full sm:w-72">
           <Input
             icon={Search}
             placeholder="Search by name or phone…"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
         </div>
       </div>
@@ -171,6 +189,10 @@ export default function Users() {
         onRowClick={setSelectedUser}
         emptyMessage="No users found"
       />
+
+      {!search && (
+        <Pagination page={page} limit={PAGE_SIZE} total={total} onPageChange={setPage} />
+      )}
 
       <Drawer
         isOpen={!!selectedUser}

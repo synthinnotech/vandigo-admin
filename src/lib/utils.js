@@ -40,3 +40,10 @@ export function truncate(str, maxLen = 30) {
   if (!str) return '—';
   return str.length > maxLen ? str.slice(0, maxLen) + '…' : str;
 }
+
+export function getErrorMessage(err, fallback = 'Something went wrong. Please try again.') {
+  const detail = err?.response?.data?.detail;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail) && detail[0]?.msg) return detail[0].msg;
+  return fallback;
+}

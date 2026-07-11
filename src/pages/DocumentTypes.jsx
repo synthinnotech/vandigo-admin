@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { getDocumentTypes, createDocumentType } from '../api/documentTypes';
@@ -12,8 +13,9 @@ import Input from '../components/ui/Input';
 export default function DocumentTypes() {
   const { addToast } = useToast();
   const qc = useQueryClient();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '' });
+  const [searchParams] = useSearchParams();
+  const [modalOpen, setModalOpen] = useState(() => searchParams.get('action') === 'create');
+  const [form, setForm] = useState({ title: '', description: '', is_mandatory: false });
   const [errors, setErrors] = useState({});
 
   const { data, isLoading } = useQuery({
@@ -29,7 +31,7 @@ export default function DocumentTypes() {
       qc.invalidateQueries({ queryKey: ['document-types'] });
       addToast('Document type created!', 'success');
       setModalOpen(false);
-      setForm({ title: '', description: '' });
+      setForm({ title: '', description: '', is_mandatory: false });
     },
     onError: () => addToast('Failed to create', 'error'),
   });
@@ -38,7 +40,11 @@ export default function DocumentTypes() {
     e.preventDefault();
     if (!form.title.trim()) { setErrors({ title: 'Title is required' }); return; }
     setErrors({});
-    create.mutate({ title: form.title.trim(), description: form.description.trim() || undefined });
+    create.mutate({
+      title: form.title.trim(),
+      description: form.description.trim() || undefined,
+      is_mandatory: form.is_mandatory,
+    });
   }
 
   const columns = [
@@ -88,9 +94,18 @@ export default function DocumentTypes() {
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               placeholder="Brief description of this document type"
               rows={3}
-              className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none placeholder-gray-400"
+              className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none placeholder-gray-400"
             />
           </div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <input
+              type="checkbox"
+              checked={form.is_mandatory}
+              onChange={(e) => setForm((f) => ({ ...f, is_mandatory: e.target.checked }))}
+              className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
+            />
+            Mandatory document
+          </label>
           <div className="flex justify-end gap-3 pt-1">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
             <Button type="submit" loading={create.isPending}>Create</Button>

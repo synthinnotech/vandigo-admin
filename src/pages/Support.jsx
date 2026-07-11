@@ -66,7 +66,7 @@ function TicketThread({ ticketId }) {
                 className={clsx(
                   'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm',
                   msg.is_agent
-                    ? 'bg-indigo-600 text-white rounded-br-sm'
+                    ? 'bg-amber-500 text-gray-900 rounded-br-sm'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-sm'
                 )}
               >
@@ -88,7 +88,7 @@ function TicketThread({ ticketId }) {
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
             placeholder="Type a reply…"
-            className="flex-1 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400"
+            className="flex-1 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-gray-400"
           />
           <Button type="submit" icon={Send} loading={reply.isPending} disabled={!replyText.trim()}>
             Send

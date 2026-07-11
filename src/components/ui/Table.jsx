@@ -40,7 +40,7 @@ export function Table({ columns, data, loading, onRowClick, emptyMessage = 'No r
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={`bg-white dark:bg-gray-800 transition-colors ${
                     onRowClick
-                      ? 'cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-900/10'
+                      ? 'cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-900/10'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/70'
                   }`}
                 >

@@ -83,12 +83,12 @@ export default function Notifications() {
               onClick={() => !n.is_read && markOne.mutate(n.id)}
               className={clsx(
                 'px-5 py-4 flex items-start gap-3 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50',
-                !n.is_read && 'bg-indigo-50/60 dark:bg-indigo-900/10'
+                !n.is_read && 'bg-amber-50/60 dark:bg-amber-900/10'
               )}
             >
               <div className={clsx(
                 'h-9 w-9 rounded-full flex items-center justify-center shrink-0 mt-0.5',
-                n.is_read ? 'bg-gray-100 dark:bg-gray-700 text-gray-400' : 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400'
+                n.is_read ? 'bg-gray-100 dark:bg-gray-700 text-gray-400' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
               )}>
                 <Bell size={16} />
               </div>
@@ -100,7 +100,7 @@ export default function Notifications() {
                 <p className="text-xs text-gray-400 mt-1">{formatDate(n.created_at)}</p>
               </div>
               {!n.is_read && (
-                <div className="h-2 w-2 rounded-full bg-indigo-500 shrink-0 mt-2" />
+                <div className="h-2 w-2 rounded-full bg-amber-500 shrink-0 mt-2" />
               )}
             </div>
           ))

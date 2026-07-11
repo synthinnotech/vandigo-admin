@@ -87,7 +87,7 @@ function NotificationBell() {
             {unread > 0 && (
               <button
                 onClick={() => markAll.mutate()}
-                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
               >
                 Mark all read
               </button>
@@ -101,7 +101,7 @@ function NotificationBell() {
                 <div
                   key={n.id}
                   onClick={() => !n.is_read && markOne.mutate(n.id)}
-                  className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors ${!n.is_read ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : ''}`}
+                  className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors ${!n.is_read ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}
                 >
                   <p className="text-sm text-gray-800 dark:text-gray-200 leading-snug">{n.message ?? n.title}</p>
                   <p className="text-xs text-gray-400 mt-1">{formatDate(n.created_at)}</p>
@@ -113,7 +113,7 @@ function NotificationBell() {
             <Link
               to="/notifications"
               onClick={() => setOpen(false)}
-              className="block text-center text-xs text-indigo-600 dark:text-indigo-400 hover:underline py-1"
+              className="block text-center text-xs text-amber-600 dark:text-amber-400 hover:underline py-1"
             >
               View all notifications
             </Link>
@@ -145,6 +145,7 @@ function UserMenu() {
 
   const name = user?.full_name ?? user?.name ?? 'Admin';
   const initials = name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+  const avatarSrc = user?.profile_picture || null;
 
   function handleSignOutClick() {
     setOpen(false);
@@ -158,8 +159,12 @@ function UserMenu() {
           onClick={() => setOpen((o) => !o)}
           className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         >
-          <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-            {initials}
+          <div className="h-8 w-8 rounded-full overflow-hidden bg-amber-500 flex items-center justify-center text-gray-900 text-xs font-bold shrink-0">
+            {avatarSrc ? (
+              <img src={avatarSrc} alt={name} className="h-full w-full object-cover" />
+            ) : (
+              initials
+            )}
           </div>
           <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[120px] truncate">
             {name}
@@ -169,9 +174,18 @@ function UserMenu() {
 
         {open && (
           <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{name}</p>
-              <p className="text-xs text-gray-400 truncate">{user?.email ?? 'admin'}</p>
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+              <div className="h-10 w-10 rounded-full overflow-hidden bg-amber-500 flex items-center justify-center text-gray-900 text-sm font-bold shrink-0">
+                {avatarSrc ? (
+                  <img src={avatarSrc} alt={name} className="h-full w-full object-cover" />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{name}</p>
+                <p className="text-xs text-gray-400 truncate">{user?.email ?? 'admin'}</p>
+              </div>
             </div>
             <Link
               to="/settings"
