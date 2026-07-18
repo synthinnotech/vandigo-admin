@@ -12,6 +12,8 @@ import { Skeleton } from '../components/ui/Skeleton';
 
 const EMPTY_FORM = { name: '', vehicle_type: '', daily_price: '', features: '', is_popular: false, is_active: true };
 
+const VEHICLE_TYPES = ['bike', 'auto', 'mini', 'sedan', 'suv'];
+
 function PlanForm({ initial = EMPTY_FORM, mode, onSubmit, loading, onClose }) {
   const [form, setForm] = useState(initial);
   const [errors, setErrors] = useState({});
@@ -45,7 +47,20 @@ function PlanForm({ initial = EMPTY_FORM, mode, onSubmit, loading, onClose }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input label="Plan Name" value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="Cab Plan" />
       {mode === 'create' && (
-        <Input label="Vehicle Type" value={form.vehicle_type} onChange={(e) => set('vehicle_type', e.target.value)} error={errors.vehicle_type} placeholder="sedan, auto, bike…" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Vehicle Type</label>
+          <select
+            value={form.vehicle_type}
+            onChange={(e) => set('vehicle_type', e.target.value)}
+            className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="" disabled>Select a vehicle type…</option>
+            {VEHICLE_TYPES.map((type) => (
+              <option key={type} value={type} className="capitalize">{type}</option>
+            ))}
+          </select>
+          {errors.vehicle_type && <p className="mt-1 text-xs text-red-500">{errors.vehicle_type}</p>}
+        </div>
       )}
       <Input label="Daily Price (₹)" type="number" step="0.01" value={form.daily_price} onChange={(e) => set('daily_price', e.target.value)} error={errors.daily_price} placeholder="50" />
       <div>
