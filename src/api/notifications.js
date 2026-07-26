@@ -5,3 +5,5 @@ export const getNotifications = (params) => axiosInstance.get('/api/v1/notificat
 export const markAllRead = () => axiosInstance.post('/api/v1/notifications/read-all');
 export const markOneRead = (notificationId) =>
   axiosInstance.patch(`/api/v1/notifications/${notificationId}/read`);
+export const broadcastNotification = (data) =>
+  axiosInstance.post('/api/v1/admin/notifications/broadcast', data);

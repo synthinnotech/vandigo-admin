@@ -17,6 +17,8 @@ import FareConfig from './pages/FareConfig';
 import Plans from './pages/Plans';
 import Support from './pages/Support';
 import Offers from './pages/Offers';
+import Banners from './pages/Banners';
+import SafetyAlerts from './pages/SafetyAlerts';
 import DocumentTypes from './pages/DocumentTypes';
 import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
@@ -47,6 +49,8 @@ export default function App() {
                 <Route path="/plans" element={<PrivateRoute><Plans /></PrivateRoute>} />
                 <Route path="/support" element={<PrivateRoute><Support /></PrivateRoute>} />
                 <Route path="/offers" element={<PrivateRoute><Offers /></PrivateRoute>} />
+                <Route path="/banners" element={<PrivateRoute><Banners /></PrivateRoute>} />
+                <Route path="/safety-alerts" element={<PrivateRoute><SafetyAlerts /></PrivateRoute>} />
                 <Route path="/document-types" element={<PrivateRoute><DocumentTypes /></PrivateRoute>} />
                 <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
                 <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
