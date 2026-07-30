@@ -1,11 +1,22 @@
 import axios from 'axios';
 
 const PROD_BASE_URL = 'https://api.vandigoride.com';
+// Same target setupProxy.js forwards /api and /static/uploads to in dev.
+const DEV_API_URL = process.env.REACT_APP_API_URL || 'http://168.144.90.65:8000';
 
 function getBaseURL() {
   const storedUrl = localStorage.getItem('vandigo_api_url');
   const isDev = process.env.NODE_ENV === 'development';
   return isDev ? '' : (storedUrl || PROD_BASE_URL);
+}
+
+// WebSockets aren't proxied by setupProxy.js, so in dev this connects
+// straight to the backend instead of going through the relative dev-server
+// origin getBaseURL() returns.
+export function getWsBaseURL() {
+  const isDev = process.env.NODE_ENV === 'development';
+  const httpBase = isDev ? DEV_API_URL : (localStorage.getItem('vandigo_api_url') || PROD_BASE_URL);
+  return httpBase.replace(/^http/, 'ws');
 }
 
 const axiosInstance = axios.create();
