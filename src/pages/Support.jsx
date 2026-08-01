@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Send } from 'lucide-react';
 import { getTickets, getTicket, replyToTicket } from '../api/support';
+import { onNotificationEvent } from '../api/notificationSocket';
 import { useToast } from '../context/ToastContext';
 import { Table } from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
@@ -21,8 +22,25 @@ function TicketThread({ ticketId }) {
     queryKey: ['support-ticket', ticketId],
     queryFn: () => getTicket(ticketId).then((r) => r.data),
     enabled: !!ticketId,
-    refetchInterval: 10000,
   });
+
+  // Live-append incoming customer messages for this ticket instead of
+  // polling — the backend pushes `support_message` over the same WS
+  // channel Layout.jsx already connects for notifications.
+  useEffect(() => {
+    if (!ticketId) return undefined;
+    return onNotificationEvent((msg) => {
+      if (msg?.event !== 'support_message') return;
+      const data = msg.data ?? {};
+      if (Number(data.ticket_id) !== Number(ticketId)) return;
+      qc.setQueryData(['support-ticket', ticketId], (prev) => {
+        if (!prev) return prev;
+        const messages = prev.messages ?? [];
+        if (messages.some((m) => m.id === data.id)) return prev;
+        return { ...prev, messages: [...messages, data] };
+      });
+    });
+  }, [ticketId, qc]);
 
   const reply = useMutation({
     mutationFn: (text) => replyToTicket(ticketId, { text }),
@@ -101,11 +119,21 @@ function TicketThread({ ticketId }) {
 
 export default function Support() {
   const [selectedTicketId, setSelectedTicketId] = useState(null);
+  const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ['support-tickets'],
     queryFn: () => getTickets().then((r) => r.data),
   });
+
+  // Refresh the ticket list when a customer sends a new message so status/
+  // ordering stays current without polling.
+  useEffect(() => {
+    return onNotificationEvent((msg) => {
+      if (msg?.event !== 'support_message' || msg.data?.is_agent) return;
+      qc.invalidateQueries({ queryKey: ['support-tickets'] });
+    });
+  }, [qc]);
 
   const tickets = Array.isArray(data) ? data : (data?.items ?? data?.tickets ?? []);
 
